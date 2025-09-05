@@ -289,7 +289,7 @@ public class MAX_SC_QBF implements Evaluator<Integer> {
         }
 
         for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
+            for (int j = 0; j < S[i].length; j++) {
                 stok.nextToken();
                 S[i][j] = (int) stok.nval;
             }
@@ -347,44 +347,7 @@ public class MAX_SC_QBF implements Evaluator<Integer> {
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException {
-
-		MAX_SC_QBF qbf = new MAX_SC_QBF("instances/qbf/qbf040");
-		qbf.printMatrix();
-		Double maxVal = Double.NEGATIVE_INFINITY;
-		
-		// evaluates randomly generated values for the domain, saving the best
-		// one.
-		for (int i = 0; i < 10000000; i++) {
-			for (int j = 0; j < qbf.size; j++) {
-				if (Math.random() < 0.5)
-					qbf.variables[j] = 0.0;
-				else
-					qbf.variables[j] = 1.0;
-			}
-			//System.out.println("x = " + Arrays.toString(qbf.variables));
-			Double eval = qbf.evaluateQBF();
-			//System.out.println("f(x) = " + eval);
-			if (maxVal < eval)
-				maxVal = eval;
-		}
-		System.out.println("maxVal = " + maxVal);
-
-		// evaluates the zero array.
-		for (int j = 0; j < qbf.size; j++) {
-			qbf.variables[j] = 0.0;
-		}
-		System.out.println("x = " + Arrays.toString(qbf.variables));
-		System.out.println("f(x) = " + qbf.evaluateQBF());
-
-		// evaluates the all-ones array.
-		for (int j = 0; j < qbf.size; j++) {
-			qbf.variables[j] = 1.0;
-		}
-		System.out.println("x = " + Arrays.toString(qbf.variables));
-		System.out.println("f(x) = " + qbf.evaluateQBF());
-		
-		
-
+        MAX_SC_QBF problem = new MAX_SC_QBF("instances/max_sc_qbf/max_sc_qbf-n_25-k_3.txt");
 	}
 
 }
