@@ -7,16 +7,11 @@ import java.io.*;
 import java.util.Arrays;
 
 /**
- * A quadractic binary function (QBF) is a function that can be expressed as the
- * sum of quadractic terms: f(x) = \sum{i,j}{a_{ij}*x_i*x_j}. In matricial form
- * a QBF can be expressed as f(x) = x'.A.x 
- * The problem of minimizing a QBF is NP-hard [1], even when no constraints
- * are considered.
- * 
- * [1] Kochenberger, et al. The unconstrained binary quadratic programming
- * problem: a survey. J Comb Optim (2014) 28:58–81. DOI
- * 10.1007/s10878-014-9734-0.
- * 
+ * The MAX_SC_QBF problem is a variation of the MAX_QBF problem with
+ * set cover. In this variation, all variables have to be covered. Each
+ * variable in a set and the problem is to choose what set to use to cover
+ * all the variables.
+ *
  * @author ccavellucci, fusberti
  *
  */
@@ -38,13 +33,13 @@ public class MAX_SC_QBF implements Evaluator<Integer> {
     public Integer[][] S;
 
 	/**
-	 * The matrix A of coefficients for the QBF f(x) = x'.A.x
+	 * The matrix A of coefficients for the MAX_SC_QBF f(x) = x'.A.x
 	 */
 	public Double[][] A;
 
 	/**
 	 * The constructor for QuadracticBinaryFunction class. The filename of the
-	 * input for setting matrix of coefficients A of the QBF. The dimension of
+	 * input for setting matrix of coefficients A of the MAX_SC_QBF. The dimension of
 	 * the array of variables x is returned from the {@link #readInput} method.
 	 *
 	 * @param filename
@@ -86,11 +81,11 @@ public class MAX_SC_QBF implements Evaluator<Integer> {
 	}
 
 	/**
-	 * {@inheritDoc} In the case of a QBF, the evaluation correspond to
+	 * {@inheritDoc} In the case of a MAX_SC_QBF, the evaluation correspond to
 	 * computing a matrix multiplication x'.A.x. A better way to evaluate this
 	 * function when at most two variables are modified is given by methods
-	 * {@link #evaluateInsertionQBF(int)}, {@link #evaluateRemovalQBF(int)} and
-	 * {@link #evaluateExchangeQBF(int,int)}.
+	 * {@link #evaluateInsertionMAXSCQBF(int)}, {@link #evaluateRemovalMAXSCQBF(int)} and
+	 * {@link #evaluateExchangeMAXSCQBF(int,int)}.
 	 * 
 	 * @return The evaluation of the QBF.
 	 */
@@ -98,26 +93,24 @@ public class MAX_SC_QBF implements Evaluator<Integer> {
 	public Double evaluate(Solution<Integer> sol) {
 
 		setVariables(sol);
-		return sol.cost = evaluateQBF();
+		return sol.cost = evaluateMAXSCQBF();
 
 	}
 
 	/**
-	 * Evaluates a QBF by calculating the matrix multiplication that defines the
+	 * Evaluates a MAX_SC_QBF by calculating the matrix multiplication that defines the
 	 * QBF: f(x) = x'.A.x .
 	 * 
 	 * @return The value of the QBF.
 	 */
-	public Double evaluateQBF() {
+	public Double evaluateMAXSCQBF() {
 
 		Double aux = (double) 0, sum = (double) 0;
-		Double vecAux[] = new Double[size];
 
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
 				aux += variables[j] * A[i][j];
 			}
-			vecAux[i] = aux;
 			sum += aux * variables[i];
 			aux = (double) 0;
 		}
@@ -136,12 +129,12 @@ public class MAX_SC_QBF implements Evaluator<Integer> {
 	public Double evaluateInsertionCost(Integer elem, Solution<Integer> sol) {
 
 		setVariables(sol);
-		return evaluateInsertionQBF(elem);
+		return evaluateInsertionMAXSCQBF(elem);
 
 	}
 
 	/**
-	 * Determines the contribution to the QBF objective function from the
+	 * Determines the contribution to the MAX_SC_QBF objective function from the
 	 * insertion of an element.
 	 * 
 	 * @param i
@@ -149,12 +142,12 @@ public class MAX_SC_QBF implements Evaluator<Integer> {
 	 * @return Ihe variation of the objective function resulting from the
 	 *         insertion.
 	 */
-	public Double evaluateInsertionQBF(int i) {
+	public Double evaluateInsertionMAXSCQBF(int i) {
 
 		if (variables[i] == 1)
 			return 0.0;
 
-		return evaluateContributionQBF(i);
+		return evaluateContributionMAXSCQBF(i);
 	}
 
 	/*
@@ -167,12 +160,12 @@ public class MAX_SC_QBF implements Evaluator<Integer> {
 	public Double evaluateRemovalCost(Integer elem, Solution<Integer> sol) {
 
 		setVariables(sol);
-		return evaluateRemovalQBF(elem);
+		return evaluateRemovalMAXSCQBF(elem);
 
 	}
 
 	/**
-	 * Determines the contribution to the QBF objective function from the
+	 * Determines the contribution to the MAX_SC_QBF objective function from the
 	 * removal of an element.
 	 * 
 	 * @param i
@@ -180,12 +173,12 @@ public class MAX_SC_QBF implements Evaluator<Integer> {
 	 * @return The variation of the objective function resulting from the
 	 *         removal.
 	 */
-	public Double evaluateRemovalQBF(int i) {
+	public Double evaluateRemovalMAXSCQBF(int i) {
 
 		if (variables[i] == 0)
 			return 0.0;
 
-		return -evaluateContributionQBF(i);
+		return -evaluateContributionMAXSCQBF(i);
 
 	}
 
@@ -199,12 +192,12 @@ public class MAX_SC_QBF implements Evaluator<Integer> {
 	public Double evaluateExchangeCost(Integer elemIn, Integer elemOut, Solution<Integer> sol) {
 
 		setVariables(sol);
-		return evaluateExchangeQBF(elemIn, elemOut);
+		return evaluateExchangeMAXSCQBF(elemIn, elemOut);
 
 	}
 
 	/**
-	 * Determines the contribution to the QBF objective function from the
+	 * Determines the contribution to the MAX_SC_QBF objective function from the
 	 * exchange of two elements one belonging to the solution and the other not.
 	 * 
 	 * @param in
@@ -216,30 +209,30 @@ public class MAX_SC_QBF implements Evaluator<Integer> {
 	 * @return The variation of the objective function resulting from the
 	 *         exchange.
 	 */
-	public Double evaluateExchangeQBF(int in, int out) {
+	public Double evaluateExchangeMAXSCQBF(int in, int out) {
 
 		Double sum = 0.0;
 
 		if (in == out)
 			return 0.0;
 		if (variables[in] == 1)
-			return evaluateRemovalQBF(out);
+			return evaluateRemovalMAXSCQBF(out);
 		if (variables[out] == 0)
-			return evaluateInsertionQBF(in);
+			return evaluateInsertionMAXSCQBF(in);
 
-		sum += evaluateContributionQBF(in);
-		sum -= evaluateContributionQBF(out);
+		sum += evaluateContributionMAXSCQBF(in);
+		sum -= evaluateContributionMAXSCQBF(out);
 		sum -= (A[in][out] + A[out][in]);
 
 		return sum;
 	}
 
 	/**
-	 * Determines the contribution to the QBF objective function from the
+	 * Determines the contribution to the MAX_SC_QBF objective function from the
 	 * insertion of an element. This method is faster than evaluating the whole
 	 * solution, since it uses the fact that only one line and one column from
 	 * matrix A needs to be evaluated when inserting a new element into the
-	 * solution. This method is different from {@link #evaluateInsertionQBF(int)},
+	 * solution. This method is different from {@link #evaluateInsertionMAXSCQBF(int)},
 	 * since it disregards the fact that the element might already be in the
 	 * solution.
 	 * 
@@ -248,7 +241,7 @@ public class MAX_SC_QBF implements Evaluator<Integer> {
 	 * @return the variation of the objective function resulting from the
 	 *         insertion.
 	 */
-	private Double evaluateContributionQBF(int i) {
+	private Double evaluateContributionMAXSCQBF(int i) {
 
 		Double sum = 0.0;
 
@@ -262,7 +255,7 @@ public class MAX_SC_QBF implements Evaluator<Integer> {
 	}
 
 	/**
-	 * Responsible for setting the QBF function parameters by reading the
+	 * Responsible for setting the MAX_SC_QBF function parameters by reading the
 	 * necessary input from an external file. this method reads the domain's
 	 * dimension and matrix {@link #A}.
 	 * 
