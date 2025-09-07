@@ -1,7 +1,7 @@
 package problems.qbf.solvers;
 
 import metaheuristics.grasp.AbstractGRASP;
-import problems.qbf.QBF_Inverse;
+import problems.qbf.MAX_SC_QBF_Inverse;
 import solutions.Solution;
 
 import java.io.IOException;
@@ -33,7 +33,7 @@ public class GRASP_MAX_SC_QBF extends AbstractGRASP<Integer> {
 	 *             necessary for I/O operations.
 	 */
 	public GRASP_MAX_SC_QBF(Double alpha, Integer iterations, String filename) throws IOException {
-		super(new QBF_Inverse(filename), alpha, iterations);
+		super(new MAX_SC_QBF_Inverse(filename), alpha, iterations);
 	}
 
 	/*
@@ -90,7 +90,7 @@ public class GRASP_MAX_SC_QBF extends AbstractGRASP<Integer> {
 	@Override
 	public Solution<Integer> createEmptySol() {
 		Solution<Integer> sol = new Solution<Integer>();
-		sol.cost = 0.0;
+		sol.cost = Double.POSITIVE_INFINITY;
 		return sol;
 	}
 
@@ -153,7 +153,7 @@ public class GRASP_MAX_SC_QBF extends AbstractGRASP<Integer> {
 			}
 		} while (minDeltaCost < -Double.MIN_VALUE);
 
-		return null;
+		return sol;
 	}
 
 	/**
@@ -162,7 +162,9 @@ public class GRASP_MAX_SC_QBF extends AbstractGRASP<Integer> {
 	 */
 	public static void main(String[] args) throws IOException {
 
-        String instanceFilePath = "instances/qbf/qbf040";
+        String instanceFilePath = "instances/max_sc_qbf/max_sc_qbf-n_25-k_3.txt";
+//        String instanceFilePath = "instances/max_sc_qbf_artur/instance_0.txt";
+
         Double alpha = 0.05;
         int iterations = 1000;
 

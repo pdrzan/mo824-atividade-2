@@ -5,6 +5,7 @@ import solutions.Solution;
 
 import java.io.*;
 import java.util.Arrays;
+import java.util.BitSet;
 
 /**
  * The MAX_SC_QBF problem is a variation of the MAX_QBF problem with
@@ -37,7 +38,17 @@ public class MAX_SC_QBF implements Evaluator<Integer> {
 	 */
 	public Double[][] A;
 
-	/**
+    /**
+     *  coverBits[i] = elements covered by set i
+     */
+    protected BitSet[] coverBits;
+
+    /**
+     * Penalty for not covering all variables
+     */
+    protected double lambda;
+
+    /**
 	 * The constructor for QuadracticBinaryFunction class. The filename of the
 	 * input for setting matrix of coefficients A of the MAX_SC_QBF. The dimension of
 	 * the array of variables x is returned from the {@link #readInput} method.
@@ -89,13 +100,13 @@ public class MAX_SC_QBF implements Evaluator<Integer> {
 	 * 
 	 * @return The evaluation of the QBF.
 	 */
-	@Override
-	public Double evaluate(Solution<Integer> sol) {
-
-		setVariables(sol);
-		return sol.cost = evaluateMAXSCQBF();
-
-	}
+    @Override
+    public Double evaluate(Solution<Integer> sol) {
+        setVariables(sol);
+        double qbf = evaluateMAXSCQBF();
+        int uncovered = uncoveredCountOf(sol);
+        return sol.cost = qbf - lambda * uncovered; // MAX
+    }
 
 	/**
 	 * Evaluates a MAX_SC_QBF by calculating the matrix multiplication that defines the
@@ -125,13 +136,13 @@ public class MAX_SC_QBF implements Evaluator<Integer> {
 	 * @see problems.Evaluator#evaluateInsertionCost(java.lang.Object,
 	 * solutions.Solution)
 	 */
-	@Override
-	public Double evaluateInsertionCost(Integer elem, Solution<Integer> sol) {
-
-		setVariables(sol);
-		return evaluateInsertionMAXSCQBF(elem);
-
-	}
+    @Override
+    public Double evaluateInsertionCost(Integer elem, Solution<Integer> sol) {
+        setVariables(sol);
+        double dQ = evaluateInsertionMAXSCQBF(elem);
+        int newlyCovered = newlyCoveredBy(elem, sol);
+        return dQ + lambda * newlyCovered;
+    }
 
 	/**
 	 * Determines the contribution to the MAX_SC_QBF objective function from the
@@ -156,13 +167,13 @@ public class MAX_SC_QBF implements Evaluator<Integer> {
 	 * @see problems.Evaluator#evaluateRemovalCost(java.lang.Object,
 	 * solutions.Solution)
 	 */
-	@Override
-	public Double evaluateRemovalCost(Integer elem, Solution<Integer> sol) {
-
-		setVariables(sol);
-		return evaluateRemovalMAXSCQBF(elem);
-
-	}
+    @Override
+    public Double evaluateRemovalCost(Integer elem, Solution<Integer> sol) {
+        setVariables(sol);
+        double dQ = evaluateRemovalMAXSCQBF(elem);
+        int newlyUncovered = newlyUncoveredBy(elem, sol);
+        return dQ - lambda * newlyUncovered;
+    }
 
 	/**
 	 * Determines the contribution to the MAX_SC_QBF objective function from the
@@ -188,13 +199,15 @@ public class MAX_SC_QBF implements Evaluator<Integer> {
 	 * @see problems.Evaluator#evaluateExchangeCost(java.lang.Object,
 	 * java.lang.Object, solutions.Solution)
 	 */
-	@Override
-	public Double evaluateExchangeCost(Integer elemIn, Integer elemOut, Solution<Integer> sol) {
+    @Override
+    public Double evaluateExchangeCost(Integer elemIn, Integer elemOut, Solution<Integer> sol) {
+        setVariables(sol);
+        double dQ = evaluateExchangeMAXSCQBF(elemIn, elemOut);
+        int newlyCoveredIn = newlyCoveredBy(elemIn, sol);
+        int newlyUncoveredOut = newlyUncoveredByConsideringExchange(elemIn, elemOut, sol);
+        return dQ + lambda * newlyCoveredIn - lambda * newlyUncoveredOut; // MAX
+    }
 
-		setVariables(sol);
-		return evaluateExchangeMAXSCQBF(elemIn, elemOut);
-
-	}
 
 	/**
 	 * Determines the contribution to the MAX_SC_QBF objective function from the
@@ -297,9 +310,98 @@ public class MAX_SC_QBF implements Evaluator<Integer> {
 			}
 		}
 
+        // Convert S to BitSet (each set Si has a BitSet with size dim(Si), which
+        // indicates which variables it covers)
+        boolean hasZero = false;
+        outer:
+        for (int i = 0; i < n; i++) {
+            for (int v : S[i]) {
+                if (v == 0) { hasZero = true; break outer; }
+            }
+        }
+        int shift = hasZero ? 0 : -1; // if the variables are named starting in 1, shift is -1, 0 otherwise
+
+        coverBits = new BitSet[n];
+        for (int i = 0; i < n; i++) {
+            BitSet bs = new BitSet(n);
+            for (int v : S[i]) {
+                int idx = v + shift;
+                if (0 <= idx && idx < n) bs.set(idx);
+            }
+            coverBits[i] = bs;
+        }
+
+        lambda = 10000;
+
 		return n;
 
 	}
+
+
+    /** Union of the sets covereds by indexes in sol. */
+    public BitSet coveredOf(Solution<Integer> sol) {
+        BitSet covered = new BitSet(size);
+        for (Integer idx : sol) {
+            covered.or(coverBits[idx]);
+        }
+        return covered;
+    }
+
+    /** Number of elements not yet covered by sol */
+    public int uncoveredCountOf(Solution<Integer> sol) {
+        BitSet covered = coveredOf(sol);
+        return size - covered.cardinality();
+    }
+
+    /** Count current cover */
+    public int[] coverCountOf(Solution<Integer> sol) {
+        int[] cc = new int[size];
+        for (Integer i : sol) {
+            BitSet bs = coverBits[i];
+            for (int k = bs.nextSetBit(0); k >= 0; k = bs.nextSetBit(k + 1)) cc[k]++;
+        }
+        return cc;
+    }
+
+    /** How many elements becomes covered when inserting elem */
+    protected int newlyCoveredBy(Integer elem, Solution<Integer> sol) {
+        BitSet uncovered = coveredOf(sol);
+        uncovered.flip(0, size); // vira conjunto de descobertos
+        BitSet bs = (BitSet) coverBits[elem].clone();
+        bs.and(uncovered);
+        return bs.cardinality();
+    }
+
+    /** How many elements becomes uncovered when inserting elem */
+    protected int newlyUncoveredBy(Integer elem, Solution<Integer> sol) {
+        int[] cc = coverCountOf(sol);
+        BitSet out = coverBits[elem];
+        int t = 0;
+        for (int k = out.nextSetBit(0); k >= 0; k = out.nextSetBit(k + 1)) {
+            if (cc[k] == 1) t++;
+        }
+        return t;
+    }
+
+    /** How many elements becames uncovered when exchanging out by in*/
+    protected int newlyUncoveredByConsideringExchange(Integer in, Integer out, Solution<Integer> sol) {
+        int[] cc = coverCountOf(sol);
+        BitSet bsOut = coverBits[out], bsIn = coverBits[in];
+        int t = 0;
+        for (int k = bsOut.nextSetBit(0); k >= 0; k = bsOut.nextSetBit(k + 1)) {
+            if (cc[k] == 1 && !bsIn.get(k)) t++;
+        }
+        return t;
+    }
+
+//    public boolean coversUncovered(Integer cand, Solution<Integer> sol) {
+//        int[] cc = coverCountOf(sol);
+//        BitSet bs = coverBits[cand];
+//        for (int k = bs.nextSetBit(0); k >= 0; k = bs.nextSetBit(k + 1)) {
+//            if (cc[k] == 0) return true;
+//        }
+//        return false;
+//    }
 
 	/**
 	 * Reserving the required memory for storing the values of the domain

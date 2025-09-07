@@ -155,6 +155,8 @@ public abstract class AbstractGRASP<E> {
 			cost = ObjFunction.evaluate(sol);
 			updateCL();
 
+            if (CL.isEmpty()) break;
+
 			/*
 			 * Explore all candidate elements to enter the solution, saving the
 			 * highest and lowest cost variation achieved by the candidates.
@@ -167,6 +169,9 @@ public abstract class AbstractGRASP<E> {
 					maxCost = deltaCost;
 			}
 
+            if (Double.isInfinite(minCost) || Double.isInfinite(maxCost) ||
+                    Double.isNaN(minCost)     || Double.isNaN(maxCost)) break;
+
 			/*
 			 * Among all candidates, insert into the RCL those with the highest
 			 * performance using parameter alpha as threshold.
@@ -177,6 +182,8 @@ public abstract class AbstractGRASP<E> {
 					RCL.add(c);
 				}
 			}
+
+            if (RCL.isEmpty()) break;
 
 			/* Choose a candidate randomly from the RCL */
 			int rndIndex = rng.nextInt(RCL.size());
@@ -201,6 +208,7 @@ public abstract class AbstractGRASP<E> {
 	public Solution<E> solve() {
 
 		bestSol = createEmptySol();
+        bestSol.cost = Double.POSITIVE_INFINITY;
 		for (int i = 0; i < iterations; i++) {
 			constructiveHeuristic();
 			localSearch();
