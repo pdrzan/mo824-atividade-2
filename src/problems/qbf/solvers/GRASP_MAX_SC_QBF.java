@@ -167,11 +167,12 @@ public class GRASP_MAX_SC_QBF extends AbstractGRASP<Integer> {
 
         Double alpha = 0.05;
         int iterations = 1000;
+        int numberOfRandomIterations = 500;
 
 		long startTime = System.currentTimeMillis();
 
 		GRASP_MAX_SC_QBF grasp = new GRASP_MAX_SC_QBF(alpha, iterations, instanceFilePath);
-		Solution<Integer> bestSol = grasp.solve();
+		Solution<Integer> bestSol = grasp.solve(numberOfRandomIterations);
 
 		long endTime   = System.currentTimeMillis();
 		long totalTime = endTime - startTime;

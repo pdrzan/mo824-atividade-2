@@ -166,7 +166,7 @@ public class GRASP_QBF extends AbstractGRASP<Integer> {
 
 		long startTime = System.currentTimeMillis();
 		GRASP_QBF grasp = new GRASP_QBF(0.05, 1000, "instances/qbf/qbf040");
-		Solution<Integer> bestSol = grasp.solve();
+		Solution<Integer> bestSol = grasp.solve(-1);
 		System.out.println("maxVal = " + bestSol);
 		long endTime   = System.currentTimeMillis();
 		long totalTime = endTime - startTime;

@@ -138,15 +138,20 @@ public abstract class AbstractGRASP<E> {
 	 * The GRASP constructive heuristic, which is responsible for building a
 	 * feasible solution by selecting in a greedy-random fashion, candidate
 	 * elements to enter the solution.
-	 * 
+	 *
+     * @param numberOfRandomIterations
+     *      The number of iterations that randomness will be applied
+     *      (Random plus greedy).After numberOfRandomIterations iterations,
+     *      only a greedy strategy will be used.
 	 * @return A feasible solution to the problem being minimized.
 	 */
-	public Solution<E> constructiveHeuristic() {
+	public Solution<E> constructiveHeuristic(int numberOfRandomIterations) {
 
 		CL = makeCL();
 		RCL = makeRCL();
 		sol = createEmptySol();
 		cost = Double.POSITIVE_INFINITY;
+        int currentInteration = 0;
 
 		/* Main loop, which repeats until the stopping criteria is reached. */
 		while (!constructiveStopCriteria()) {
@@ -157,20 +162,24 @@ public abstract class AbstractGRASP<E> {
 
             if (CL.isEmpty()) break;
 
+            E bestCandidate = CL.getFirst();
+
 			/*
 			 * Explore all candidate elements to enter the solution, saving the
 			 * highest and lowest cost variation achieved by the candidates.
 			 */
 			for (E c : CL) {
 				Double deltaCost = ObjFunction.evaluateInsertionCost(c, sol);
-				if (deltaCost < minCost)
-					minCost = deltaCost;
+				if (deltaCost < minCost) {
+                    minCost = deltaCost;
+                    bestCandidate = c;
+                }
 				if (deltaCost > maxCost)
 					maxCost = deltaCost;
 			}
 
-            if (Double.isInfinite(minCost) || Double.isInfinite(maxCost) ||
-                    Double.isNaN(minCost)     || Double.isNaN(maxCost)) break;
+            if (Double.isInfinite(minCost) || Double.isInfinite(maxCost)) break;
+
 
 			/*
 			 * Among all candidates, insert into the RCL those with the highest
@@ -183,16 +192,22 @@ public abstract class AbstractGRASP<E> {
 				}
 			}
 
+            E inCand = bestCandidate;
+
             if (RCL.isEmpty()) break;
 
-			/* Choose a candidate randomly from the RCL */
-			int rndIndex = rng.nextInt(RCL.size());
-			E inCand = RCL.get(rndIndex);
+            if (currentInteration < numberOfRandomIterations) {
+                /* Choose a candidate randomly from the RCL */
+                int rndIndex = rng.nextInt(RCL.size());
+                inCand = RCL.get(rndIndex);
+            }
+
 			CL.remove(inCand);
 			sol.add(inCand);
 			ObjFunction.evaluate(sol);
 			RCL.clear();
 
+            currentInteration++;
 		}
 
 		return sol;
@@ -202,15 +217,19 @@ public abstract class AbstractGRASP<E> {
 	 * The GRASP mainframe. It consists of a loop, in which each iteration goes
 	 * through the constructive heuristic and local search. The best solution is
 	 * returned as result.
-	 * 
+	 *
+     * @param numberOfRandomIterations
+     *      Number of iterations in construction phase that randomness will
+     *      be applied (Random plus greedy)
 	 * @return The best feasible solution obtained throughout all iterations.
 	 */
-	public Solution<E> solve() {
+	public Solution<E> solve(int numberOfRandomIterations) {
+        numberOfRandomIterations = numberOfRandomIterations > 0 ? numberOfRandomIterations : iterations;
 
 		bestSol = createEmptySol();
         bestSol.cost = Double.POSITIVE_INFINITY;
 		for (int i = 0; i < iterations; i++) {
-			constructiveHeuristic();
+			constructiveHeuristic(numberOfRandomIterations);
 			localSearch();
 			if (bestSol.cost > sol.cost) {
 				bestSol = new Solution<E>(sol);
