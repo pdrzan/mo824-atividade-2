@@ -1,12 +1,15 @@
 package problems.qbf.solvers;
 
+import biasfunctions.BiasFunction;
 import biasfunctions.RandomBiasFunction;
+import biasfunctions.LinearBiasFunction;
 import metaheuristics.grasp.AbstractGRASP;
 import problems.qbf.MAX_SC_QBF_Inverse;
 import solutions.Solution;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 
 /**
@@ -33,8 +36,9 @@ public class GRASP_MAX_SC_QBF extends AbstractGRASP<Integer> {
 	 * @throws IOException
 	 *             necessary for I/O operations.
 	 */
-	public GRASP_MAX_SC_QBF(Double alpha, Integer iterations, String filename) throws IOException {
-		super(new MAX_SC_QBF_Inverse(filename), alpha, iterations, new RandomBiasFunction());
+	public GRASP_MAX_SC_QBF(Double alpha, Integer iterations, BiasFunction biasFunction, String filename) throws IOException {
+		super(new MAX_SC_QBF_Inverse(filename), alpha, iterations, biasFunction);
+        System.out.println("Using the " + biasFunction);
 	}
 
 	/*
@@ -163,8 +167,8 @@ public class GRASP_MAX_SC_QBF extends AbstractGRASP<Integer> {
 	 */
 	public static void main(String[] args) throws IOException {
 
-        String instanceFilePath = "instances/max_sc_qbf/max_sc_qbf-n_25-k_3.txt";
-//        String instanceFilePath = "instances/max_sc_qbf_artur/instance_0.txt";
+//        String instanceFilePath = "instances/max_sc_qbf/max_sc_qbf-n_100-k_3.txt";
+        String instanceFilePath = "instances/max_sc_qbf_artur/instance_6.txt";
 
         Double alpha = 0.05;
         int iterations = 1000;
@@ -172,7 +176,8 @@ public class GRASP_MAX_SC_QBF extends AbstractGRASP<Integer> {
 
 		long startTime = System.currentTimeMillis();
 
-		GRASP_MAX_SC_QBF grasp = new GRASP_MAX_SC_QBF(alpha, iterations, instanceFilePath);
+		GRASP_MAX_SC_QBF grasp = new GRASP_MAX_SC_QBF(alpha, iterations, new LinearBiasFunction(), instanceFilePath);
+//        GRASP_MAX_SC_QBF grasp = new GRASP_MAX_SC_QBF(alpha, iterations, new RandomBiasFunction(), instanceFilePath);
 		Solution<Integer> bestSol = grasp.solve(numberOfRandomIterations);
 
 		long endTime   = System.currentTimeMillis();

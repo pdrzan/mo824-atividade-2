@@ -35,7 +35,7 @@ public abstract class AbstractGRASP<E> {
 	/**
 	 * the objective function being optimized
 	 */
-	protected Evaluator<E> ObjFunction;
+	public Evaluator<E> ObjFunction;
 
 	/**
 	 * the GRASP greediness-randomness parameter
@@ -209,7 +209,7 @@ public abstract class AbstractGRASP<E> {
 
             if (currentInteration < numberOfRandomIterations) {
                 /* Choose a candidate randomly from the RCL */
-                int indexCandidateToEnterSolution = biasFunction.selectCandidate(RCL);
+                int indexCandidateToEnterSolution = biasFunction.selectCandidate(RCL, ObjFunction, sol);
                 inCand = RCL.get(indexCandidateToEnterSolution);
             }
 
