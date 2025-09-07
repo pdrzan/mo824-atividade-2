@@ -4,8 +4,10 @@
 package metaheuristics.grasp;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Random;
 
+import biasfunctions.BiasFunction;
 import problems.Evaluator;
 import solutions.Solution;
 
@@ -75,6 +77,12 @@ public abstract class AbstractGRASP<E> {
 	 */
 	protected ArrayList<E> RCL;
 
+    /**
+     * Bias function to select that select the elements from RCL
+     * that will enter the solution.
+     */
+    protected BiasFunction<E> biasFunction;
+
 	/**
 	 * Creates the Candidate List, which is an ArrayList of candidate elements
 	 * that can enter a solution.
@@ -128,10 +136,11 @@ public abstract class AbstractGRASP<E> {
 	 * @param iterations
 	 *            The number of iterations which the GRASP will be executed.
 	 */
-	public AbstractGRASP(Evaluator<E> objFunction, Double alpha, Integer iterations) {
+	public AbstractGRASP(Evaluator<E> objFunction, Double alpha, Integer iterations, BiasFunction<E> biasFunction) {
 		this.ObjFunction = objFunction;
 		this.alpha = alpha;
 		this.iterations = iterations;
+        this.biasFunction = biasFunction;
 	}
 	
 	/**
@@ -192,14 +201,16 @@ public abstract class AbstractGRASP<E> {
 				}
 			}
 
+            RCL.sort(Comparator.comparingDouble(c -> ObjFunction.evaluateInsertionCost(c, sol)));
+
             E inCand = bestCandidate;
 
             if (RCL.isEmpty()) break;
 
             if (currentInteration < numberOfRandomIterations) {
                 /* Choose a candidate randomly from the RCL */
-                int rndIndex = rng.nextInt(RCL.size());
-                inCand = RCL.get(rndIndex);
+                int indexCandidateToEnterSolution = biasFunction.selectCandidate(RCL);
+                inCand = RCL.get(indexCandidateToEnterSolution);
             }
 
 			CL.remove(inCand);

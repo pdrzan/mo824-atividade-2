@@ -1,5 +1,6 @@
 package problems.qbf.solvers;
 
+import biasfunctions.RandomBiasFunction;
 import metaheuristics.grasp.AbstractGRASP;
 import problems.qbf.MAX_SC_QBF_Inverse;
 import solutions.Solution;
@@ -33,7 +34,7 @@ public class GRASP_MAX_SC_QBF extends AbstractGRASP<Integer> {
 	 *             necessary for I/O operations.
 	 */
 	public GRASP_MAX_SC_QBF(Double alpha, Integer iterations, String filename) throws IOException {
-		super(new MAX_SC_QBF_Inverse(filename), alpha, iterations);
+		super(new MAX_SC_QBF_Inverse(filename), alpha, iterations, new RandomBiasFunction());
 	}
 
 	/*

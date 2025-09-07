@@ -3,6 +3,7 @@ package problems.qbf.solvers;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import biasfunctions.RandomBiasFunction;
 import metaheuristics.grasp.AbstractGRASP;
 import problems.qbf.QBF_Inverse;
 import solutions.Solution;
@@ -35,7 +36,7 @@ public class GRASP_QBF extends AbstractGRASP<Integer> {
 	 *             necessary for I/O operations.
 	 */
 	public GRASP_QBF(Double alpha, Integer iterations, String filename) throws IOException {
-		super(new QBF_Inverse(filename), alpha, iterations);
+		super(new QBF_Inverse(filename), alpha, iterations, new RandomBiasFunction());
 	}
 
 	/*
