@@ -36,8 +36,8 @@ public class GRASP_MAX_SC_QBF extends AbstractGRASP<Integer> {
 	 * @throws IOException
 	 *             necessary for I/O operations.
 	 */
-	public GRASP_MAX_SC_QBF(Double alpha, Integer iterations, BiasFunction biasFunction, String filename) throws IOException {
-		super(new MAX_SC_QBF_Inverse(filename), alpha, iterations, biasFunction);
+	public GRASP_MAX_SC_QBF(Double alpha, Integer iterations, BiasFunction biasFunction, String filename, boolean isFirstImproving) throws IOException {
+		super(new MAX_SC_QBF_Inverse(filename), alpha, iterations, biasFunction, isFirstImproving);
         System.out.println("Using the " + biasFunction);
 	}
 
@@ -122,29 +122,43 @@ public class GRASP_MAX_SC_QBF extends AbstractGRASP<Integer> {
 					minDeltaCost = deltaCost;
 					bestCandIn = candIn;
 					bestCandOut = null;
+
+                    if (isFirstImproving && minDeltaCost < -Double.MIN_VALUE) break;
 				}
 			}
-			// Evaluate removals
-			for (Integer candOut : sol) {
-				double deltaCost = ObjFunction.evaluateRemovalCost(candOut, sol);
-				if (deltaCost < minDeltaCost) {
-					minDeltaCost = deltaCost;
-					bestCandIn = null;
-					bestCandOut = candOut;
-				}
-			}
-			// Evaluate exchanges
-			for (Integer candIn : CL) {
-				for (Integer candOut : sol) {
-					double deltaCost = ObjFunction.evaluateExchangeCost(candIn, candOut, sol);
-					if (deltaCost < minDeltaCost) {
-						minDeltaCost = deltaCost;
-						bestCandIn = candIn;
-						bestCandOut = candOut;
-					}
-				}
-			}
-			// Implement the best move, if it reduces the solution cost.
+
+            if (!isFirstImproving || minDeltaCost >= -Double.MIN_VALUE) {
+                // Evaluate removals
+                for (Integer candOut : sol) {
+                    double deltaCost = ObjFunction.evaluateRemovalCost(candOut, sol);
+                    if (deltaCost < minDeltaCost) {
+                        minDeltaCost = deltaCost;
+                        bestCandIn = null;
+                        bestCandOut = candOut;
+
+                        if (isFirstImproving && minDeltaCost < -Double.MIN_VALUE) break;
+                    }
+                }
+            }
+
+
+            if (!isFirstImproving || minDeltaCost >= -Double.MIN_VALUE) {
+                // Evaluate exchanges
+                for (Integer candIn : CL) {
+                    for (Integer candOut : sol) {
+                        double deltaCost = ObjFunction.evaluateExchangeCost(candIn, candOut, sol);
+                        if (deltaCost < minDeltaCost) {
+                            minDeltaCost = deltaCost;
+                            bestCandIn = candIn;
+                            bestCandOut = candOut;
+
+                            if (isFirstImproving && minDeltaCost < -Double.MIN_VALUE) break;
+                        }
+                    }
+                }
+            }
+
+			// Implement the move, if it reduces the solution cost.
 			if (minDeltaCost < -Double.MIN_VALUE) {
 				if (bestCandOut != null) {
 					sol.remove(bestCandOut);
@@ -167,8 +181,8 @@ public class GRASP_MAX_SC_QBF extends AbstractGRASP<Integer> {
 	 */
 	public static void main(String[] args) throws IOException {
 
-//        String instanceFilePath = "instances/max_sc_qbf/max_sc_qbf-n_100-k_3.txt";
-        String instanceFilePath = "instances/max_sc_qbf_artur/instance_6.txt";
+        String instanceFilePath = "instances/max_sc_qbf/max_sc_qbf-n_100-k_3.txt";
+//        String instanceFilePath = "instances/max_sc_qbf_artur/instance_6.txt";
 
         Double alpha = 0.05;
         int iterations = 1000;
@@ -176,8 +190,8 @@ public class GRASP_MAX_SC_QBF extends AbstractGRASP<Integer> {
 
 		long startTime = System.currentTimeMillis();
 
-		GRASP_MAX_SC_QBF grasp = new GRASP_MAX_SC_QBF(alpha, iterations, new LinearBiasFunction(), instanceFilePath);
-//        GRASP_MAX_SC_QBF grasp = new GRASP_MAX_SC_QBF(alpha, iterations, new RandomBiasFunction(), instanceFilePath);
+		GRASP_MAX_SC_QBF grasp = new GRASP_MAX_SC_QBF(alpha, iterations, new LinearBiasFunction(), instanceFilePath, true);
+//        GRASP_MAX_SC_QBF grasp = new GRASP_MAX_SC_QBF(alpha, iterations, new RandomBiasFunction(), instanceFilePath, true);
 		Solution<Integer> bestSol = grasp.solve(numberOfRandomIterations);
 
 		long endTime   = System.currentTimeMillis();

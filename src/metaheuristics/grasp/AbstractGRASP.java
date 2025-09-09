@@ -83,6 +83,12 @@ public abstract class AbstractGRASP<E> {
      */
     protected BiasFunction<E> biasFunction;
 
+    /**
+     * When true adopts the first-improving strategy. When false
+     * adopts the best improving strategy.
+     */
+    protected boolean isFirstImproving;
+
 	/**
 	 * Creates the Candidate List, which is an ArrayList of candidate elements
 	 * that can enter a solution.
@@ -136,11 +142,12 @@ public abstract class AbstractGRASP<E> {
 	 * @param iterations
 	 *            The number of iterations which the GRASP will be executed.
 	 */
-	public AbstractGRASP(Evaluator<E> objFunction, Double alpha, Integer iterations, BiasFunction<E> biasFunction) {
+	public AbstractGRASP(Evaluator<E> objFunction, Double alpha, Integer iterations, BiasFunction<E> biasFunction, boolean isFirstImproving) {
 		this.ObjFunction = objFunction;
 		this.alpha = alpha;
 		this.iterations = iterations;
         this.biasFunction = biasFunction;
+        this.isFirstImproving = isFirstImproving;
 	}
 	
 	/**
