@@ -63,9 +63,9 @@ public abstract class AbstractGRASP<E> {
 	protected Solution<E> sol;
 
 	/**
-	 * the number of iterations the GRASP main loop executes.
+	 * time in secconds to run GRASP
 	 */
-	protected Integer iterations;
+	protected Integer seconds;
 
 	/**
 	 * the Candidate List of elements to enter the solution.
@@ -139,13 +139,13 @@ public abstract class AbstractGRASP<E> {
 	 * @param alpha
 	 *            The GRASP greediness-randomness parameter (within the range
 	 *            [0,1])
-	 * @param iterations
-	 *            The number of iterations which the GRASP will be executed.
+	 * @param seconds
+	 *            The number of seconds which the GRASP will be executed.
 	 */
-	public AbstractGRASP(Evaluator<E> objFunction, Double alpha, Integer iterations, BiasFunction<E> biasFunction, boolean isFirstImproving) {
+	public AbstractGRASP(Evaluator<E> objFunction, Double alpha, Integer seconds, BiasFunction<E> biasFunction, boolean isFirstImproving) {
 		this.ObjFunction = objFunction;
 		this.alpha = alpha;
-		this.iterations = iterations;
+		this.seconds = seconds;
         this.biasFunction = biasFunction;
         this.isFirstImproving = isFirstImproving;
 	}
@@ -241,11 +241,15 @@ public abstract class AbstractGRASP<E> {
 	 * @return The best feasible solution obtained throughout all iterations.
 	 */
 	public Solution<E> solve(int numberOfRandomIterations) {
-        numberOfRandomIterations = numberOfRandomIterations > 0 ? numberOfRandomIterations : iterations;
+        numberOfRandomIterations = Math.max(numberOfRandomIterations, 0);
 
 		bestSol = createEmptySol();
         bestSol.cost = Double.POSITIVE_INFINITY;
-		for (int i = 0; i < numberOfRandomIterations; i++) {
+
+        long startTime = System.currentTimeMillis();
+        long endTime = startTime;
+
+		for (int i = 0; endTime - startTime < seconds * 1000; i++) {
 			constructiveHeuristic(numberOfRandomIterations);
 			localSearch();
 			
@@ -255,6 +259,8 @@ public abstract class AbstractGRASP<E> {
 				if (verbose)
 					System.out.println("(Iter. " + i + "|" + numberOfRandomIterations + ") BestSol = " + bestSol);
 			}
+
+            endTime = System.currentTimeMillis();
 		}
 
 		return bestSol;

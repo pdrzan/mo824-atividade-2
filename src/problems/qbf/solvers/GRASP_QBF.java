@@ -27,16 +27,16 @@ public class GRASP_QBF extends AbstractGRASP<Integer> {
 	 * @param alpha
 	 *            The GRASP greediness-randomness parameter (within the range
 	 *            [0,1])
-	 * @param iterations
-	 *            The number of iterations which the GRASP will be executed.
+	 * @param seconds
+	 *            The number of seconds which the GRASP will be executed.
 	 * @param filename
 	 *            Name of the file for which the objective function parameters
 	 *            should be read.
 	 * @throws IOException
 	 *             necessary for I/O operations.
 	 */
-	public GRASP_QBF(Double alpha, Integer iterations, String filename, boolean isFirstImproving) throws IOException {
-		super(new QBF_Inverse(filename), alpha, iterations, new RandomBiasFunction(), isFirstImproving);
+	public GRASP_QBF(Double alpha, Integer seconds, String filename, boolean isFirstImproving) throws IOException {
+		super(new QBF_Inverse(filename), alpha, seconds, new RandomBiasFunction(), isFirstImproving);
 	}
 
 	/*

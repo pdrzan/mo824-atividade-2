@@ -29,16 +29,16 @@ public class GRASP_MAX_SC_QBF extends AbstractGRASP<Integer> {
 	 * @param alpha
 	 *            The GRASP greediness-randomness parameter (within the range
 	 *            [0,1])
-	 * @param iterations
-	 *            The number of iterations which the GRASP will be executed.
+	 * @param seconds
+	 *            The number of seconds which the GRASP will be executed.
 	 * @param filename
 	 *            Name of the file for which the objective function parameters
 	 *            should be read.
 	 * @throws IOException
 	 *             necessary for I/O operations.
 	 */
-	public GRASP_MAX_SC_QBF(Double alpha, Integer iterations, BiasFunction biasFunction, String filename, boolean isFirstImproving) throws IOException {
-		super(new MAX_SC_QBF_Inverse(filename), alpha, iterations, biasFunction, isFirstImproving);
+	public GRASP_MAX_SC_QBF(Double alpha, Integer seconds, BiasFunction biasFunction, String filename, boolean isFirstImproving) throws IOException {
+		super(new MAX_SC_QBF_Inverse(filename), alpha, seconds, biasFunction, isFirstImproving);
         System.out.println("Using the " + biasFunction);
 	}
 
@@ -189,12 +189,12 @@ public class GRASP_MAX_SC_QBF extends AbstractGRASP<Integer> {
         String instanceFilePath = "instances/max_sc_qbf_artur/instance_6.txt";
 
         Double alpha = 0.05;
-        int iterations = 1000;
+        int seconds = 60 * 30; // 30 minutes
         int numberOfRandomIterations = 500;
 
 		long startTime = System.currentTimeMillis();
 
-		GRASP_MAX_SC_QBF grasp = new GRASP_MAX_SC_QBF(alpha, iterations, new LinearBiasFunction(), instanceFilePath, false);
+		GRASP_MAX_SC_QBF grasp = new GRASP_MAX_SC_QBF(alpha, seconds, new LinearBiasFunction(), instanceFilePath, false);
 //        GRASP_MAX_SC_QBF grasp = new GRASP_MAX_SC_QBF(alpha, iterations, new RandomBiasFunction(), instanceFilePath, true);
 		Solution<Integer> bestSol = grasp.solve(numberOfRandomIterations);
 
