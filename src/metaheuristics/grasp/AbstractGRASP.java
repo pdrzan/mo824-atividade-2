@@ -178,7 +178,7 @@ public abstract class AbstractGRASP<E> {
 
             if (CL.isEmpty()) break;
 
-            E bestCandidate = CL.getFirst();
+            E bestCandidate = CL.get(0);
 
 			/*
 			 * Explore all candidate elements to enter the solution, saving the
@@ -246,13 +246,15 @@ public abstract class AbstractGRASP<E> {
 
 		bestSol = createEmptySol();
         bestSol.cost = Double.POSITIVE_INFINITY;
-		for (int i = 0; i < iterations; i++) {
+		for (int i = 0; i < numberOfRandomIterations; i++) {
 			constructiveHeuristic(numberOfRandomIterations);
 			localSearch();
+			
+			System.out.println("iter: " + i + " -> " + sol.cost);
 			if (bestSol.cost > sol.cost) {
 				bestSol = new Solution<E>(sol);
 				if (verbose)
-					System.out.println("(Iter. " + i + ") BestSol = " + bestSol);
+					System.out.println("(Iter. " + i + "|" + numberOfRandomIterations + ") BestSol = " + bestSol);
 			}
 		}
 
@@ -267,7 +269,7 @@ public abstract class AbstractGRASP<E> {
 	 * @return true if the criteria is met.
 	 */
 	public Boolean constructiveStopCriteria() {
-		return (cost > sol.cost) ? false : true;
+		return (cost >= sol.cost) ? false : true;
 	}
 
 }
