@@ -196,7 +196,6 @@ public abstract class AbstractGRASP<E> {
 
             if (Double.isInfinite(minCost) || Double.isInfinite(maxCost)) break;
 
-
 			/*
 			 * Among all candidates, insert into the RCL those with the highest
 			 * performance using parameter alpha as threshold.
@@ -250,7 +249,7 @@ public abstract class AbstractGRASP<E> {
 			constructiveHeuristic(numberOfRandomIterations);
 			localSearch();
 			
-			System.out.println("iter: " + i + " -> " + sol.cost);
+//			System.out.println("iter: " + i + " -> " + sol.cost);
 			if (bestSol.cost > sol.cost) {
 				bestSol = new Solution<E>(sol);
 				if (verbose)

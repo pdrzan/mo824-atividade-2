@@ -103,9 +103,7 @@ public class MAX_SC_QBF implements Evaluator<Integer> {
     @Override
     public Double evaluate(Solution<Integer> sol) {
         setVariables(sol);
-        double qbf = evaluateMAXSCQBF();
-        int uncovered = uncoveredCountOf(sol);
-        return sol.cost = qbf - lambda * uncovered; // MAX
+        return sol.cost = evaluateMAXSCQBF();
     }
 
 	/**
@@ -141,7 +139,7 @@ public class MAX_SC_QBF implements Evaluator<Integer> {
         setVariables(sol);
         double dQ = evaluateInsertionMAXSCQBF(elem);
         int newlyCovered = newlyCoveredBy(elem, sol);
-        return dQ + lambda * newlyCovered;
+        return dQ <= 0 && newlyCovered > 0 ? 1 : dQ;
     }
 
 	/**
@@ -172,7 +170,7 @@ public class MAX_SC_QBF implements Evaluator<Integer> {
         setVariables(sol);
         double dQ = evaluateRemovalMAXSCQBF(elem);
         int newlyUncovered = newlyUncoveredBy(elem, sol);
-        return dQ - lambda * newlyUncovered;
+        return newlyUncovered > 0 ? Double.NEGATIVE_INFINITY : dQ;
     }
 
 	/**
@@ -205,9 +203,8 @@ public class MAX_SC_QBF implements Evaluator<Integer> {
         double dQ = evaluateExchangeMAXSCQBF(elemIn, elemOut);
         int newlyCoveredIn = newlyCoveredBy(elemIn, sol);
         int newlyUncoveredOut = newlyUncoveredByConsideringExchange(elemIn, elemOut, sol);
-        return dQ + lambda * newlyCoveredIn - lambda * newlyUncoveredOut; // MAX
+        return newlyUncoveredOut > 0 ? Double.NEGATIVE_INFINITY : dQ <= 0 && newlyCoveredIn > 0 ? 1 : dQ;
     }
-
 
 	/**
 	 * Determines the contribution to the MAX_SC_QBF objective function from the
@@ -337,7 +334,6 @@ public class MAX_SC_QBF implements Evaluator<Integer> {
 
 	}
 
-
     /** Union of the sets covereds by indexes in sol. */
     public BitSet coveredOf(Solution<Integer> sol) {
         BitSet covered = new BitSet(size);
@@ -345,12 +341,6 @@ public class MAX_SC_QBF implements Evaluator<Integer> {
             covered.or(coverBits[idx]);
         }
         return covered;
-    }
-
-    /** Number of elements not yet covered by sol */
-    public int uncoveredCountOf(Solution<Integer> sol) {
-        BitSet covered = coveredOf(sol);
-        return size - covered.cardinality();
     }
 
     /** Count current cover */
@@ -393,15 +383,6 @@ public class MAX_SC_QBF implements Evaluator<Integer> {
         }
         return t;
     }
-
-//    public boolean coversUncovered(Integer cand, Solution<Integer> sol) {
-//        int[] cc = coverCountOf(sol);
-//        BitSet bs = coverBits[cand];
-//        for (int k = bs.nextSetBit(0); k >= 0; k = bs.nextSetBit(k + 1)) {
-//            if (cc[k] == 0) return true;
-//        }
-//        return false;
-//    }
 
 	/**
 	 * Reserving the required memory for storing the values of the domain

@@ -10,26 +10,22 @@ public class MAX_SC_QBF_Inverse extends MAX_SC_QBF {
     }
 
     @Override
-    public Double evaluate(Solution<Integer> sol) {
-        Double v = super.evaluate(sol);
-        return -v;
+    public Double evaluateMAXSCQBF() {
+        return -super.evaluateMAXSCQBF();
     }
 
     @Override
     public Double evaluateInsertionCost(Integer elem, Solution<Integer> sol) {
-        Double d = super.evaluateInsertionCost(elem, sol);
-        return -d;
+        return -super.evaluateInsertionCost(elem, sol);
     }
 
     @Override
     public Double evaluateRemovalCost(Integer elem, Solution<Integer> sol) {
-        Double d = super.evaluateRemovalCost(elem, sol);
-        return -d;
+        return -super.evaluateRemovalCost(elem, sol);
     }
 
     @Override
     public Double evaluateExchangeCost(Integer elemIn, Integer elemOut, Solution<Integer> sol) {
-        Double d = super.evaluateExchangeCost(elemIn, elemOut, sol);
-        return -d;
+        return -super.evaluateExchangeCost(elemIn, elemOut, sol);
     }
 }

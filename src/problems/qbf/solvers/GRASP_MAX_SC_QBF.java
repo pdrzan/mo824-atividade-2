@@ -9,6 +9,7 @@ import solutions.Solution;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 
@@ -81,7 +82,10 @@ public class GRASP_MAX_SC_QBF extends AbstractGRASP<Integer> {
 	@Override
 	public void updateCL() {
 
-		// do nothing since all elements off the solution are viable candidates.
+        // Shuffles to make first-improvement more efficiently
+        if (isFirstImproving) {
+            Collections.shuffle(CL);
+        }
 
 	}
 
@@ -95,7 +99,7 @@ public class GRASP_MAX_SC_QBF extends AbstractGRASP<Integer> {
 	@Override
 	public Solution<Integer> createEmptySol() {
 		Solution<Integer> sol = new Solution<Integer>();
-		sol.cost = Double.POSITIVE_INFINITY;
+		sol.cost = 0.0;
 		return sol;
 	}
 
@@ -181,8 +185,8 @@ public class GRASP_MAX_SC_QBF extends AbstractGRASP<Integer> {
 	 */
 	public static void main(String[] args) throws IOException {
 
-        String instanceFilePath = "instances/max_sc_qbf/max_sc_qbf-n_100-k_3.txt";
-//        String instanceFilePath = "instances/max_sc_qbf_artur/instance_6.txt";
+//        String instanceFilePath = "instances/max_sc_qbf/max_sc_qbf-n_100-k_5.txt";
+        String instanceFilePath = "instances/max_sc_qbf_artur/instance_6.txt";
 
         Double alpha = 0.05;
         int iterations = 1000;
@@ -190,7 +194,7 @@ public class GRASP_MAX_SC_QBF extends AbstractGRASP<Integer> {
 
 		long startTime = System.currentTimeMillis();
 
-		GRASP_MAX_SC_QBF grasp = new GRASP_MAX_SC_QBF(alpha, iterations, new LinearBiasFunction(), instanceFilePath, true);
+		GRASP_MAX_SC_QBF grasp = new GRASP_MAX_SC_QBF(alpha, iterations, new LinearBiasFunction(), instanceFilePath, false);
 //        GRASP_MAX_SC_QBF grasp = new GRASP_MAX_SC_QBF(alpha, iterations, new RandomBiasFunction(), instanceFilePath, true);
 		Solution<Integer> bestSol = grasp.solve(numberOfRandomIterations);
 
