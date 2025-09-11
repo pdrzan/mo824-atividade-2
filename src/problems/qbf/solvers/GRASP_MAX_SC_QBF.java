@@ -186,18 +186,20 @@ public class GRASP_MAX_SC_QBF extends AbstractGRASP<Integer> {
 
         String instanceFilePath = argsList.get(argsList.indexOf("--instance") + 1);
         Double alpha = Double.valueOf(argsList.get(argsList.indexOf("--alpha") + 1));
-        int numberOfRandomIterations = Integer.parseInt(argsList.get(argsList.indexOf("--randomiterations") + 1));
+        int numberOfRandomIterations = Integer.parseInt(argsList.get(argsList.indexOf("--randomiterations") + 1)); // Set to -1 to be a default GRASP
         boolean isFirstImprovement = Boolean.parseBoolean(argsList.get(argsList.indexOf("--firstimprovement") + 1));
+        boolean isLinearBiasFunction = Boolean.parseBoolean(argsList.get(argsList.indexOf("--linearBias") + 1));
 
         System.out.println("[DEBUG] instanceFilePath: " + instanceFilePath);
         System.out.println("[DEBUG] alpha: " + alpha);
         System.out.println("[DEBUG] numberOfRandomIterations: " + numberOfRandomIterations);
         System.out.println("[DEBUG] isFirstImprovement: " + isFirstImprovement);
+        System.out.println("[DEBUG] isLinearBiasFunction: " + isLinearBiasFunction);
 
         int seconds = 60 * 30; // 30 minutes
 		long startTime = System.currentTimeMillis();
 
-		GRASP_MAX_SC_QBF grasp = new GRASP_MAX_SC_QBF(alpha, seconds, new LinearBiasFunction(), instanceFilePath, isFirstImprovement);
+		GRASP_MAX_SC_QBF grasp = new GRASP_MAX_SC_QBF(alpha, seconds, isLinearBiasFunction ? new LinearBiasFunction() : new RandomBiasFunction(), instanceFilePath, isFirstImprovement);
 		Solution<Integer> bestSol = grasp.solve(numberOfRandomIterations);
 
 		long endTime   = System.currentTimeMillis();

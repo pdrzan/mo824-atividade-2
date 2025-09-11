@@ -213,7 +213,7 @@ public abstract class AbstractGRASP<E> {
 
             if (RCL.isEmpty()) break;
 
-            if (currentInteration < numberOfRandomIterations) {
+            if (currentInteration < numberOfRandomIterations || numberOfRandomIterations == -1) {
                 /* Choose a candidate randomly from the RCL */
                 int indexCandidateToEnterSolution = biasFunction.selectCandidate(RCL, ObjFunction, sol);
                 inCand = RCL.get(indexCandidateToEnterSolution);
@@ -241,8 +241,6 @@ public abstract class AbstractGRASP<E> {
 	 * @return The best feasible solution obtained throughout all iterations.
 	 */
 	public Solution<E> solve(int numberOfRandomIterations) {
-        numberOfRandomIterations = Math.max(numberOfRandomIterations, 0);
-
 		bestSol = createEmptySol();
         bestSol.cost = Double.POSITIVE_INFINITY;
 
@@ -257,7 +255,7 @@ public abstract class AbstractGRASP<E> {
 			if (bestSol.cost > sol.cost) {
 				bestSol = new Solution<E>(sol);
 				if (verbose)
-					System.out.println("(Iter. " + i + "|" + numberOfRandomIterations + ") BestSol = " + bestSol);
+					System.out.println("(Iter. " + i + "| N ) BestSol = " + bestSol);
 			}
 
             endTime = System.currentTimeMillis();
