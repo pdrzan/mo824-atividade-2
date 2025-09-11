@@ -8,9 +8,7 @@ import problems.qbf.MAX_SC_QBF_Inverse;
 import solutions.Solution;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Random;
+import java.util.*;
 
 
 /**
@@ -184,18 +182,22 @@ public class GRASP_MAX_SC_QBF extends AbstractGRASP<Integer> {
 	 * 
 	 */
 	public static void main(String[] args) throws IOException {
+        ArrayList<String> argsList = new ArrayList(List.of(args));
 
-//        String instanceFilePath = "instances/max_sc_qbf/max_sc_qbf-n_100-k_5.txt";
-        String instanceFilePath = "instances/max_sc_qbf_artur/instance_6.txt";
+        String instanceFilePath = argsList.get(argsList.indexOf("--instance") + 1);
+        Double alpha = Double.valueOf(argsList.get(argsList.indexOf("--alpha") + 1));
+        int numberOfRandomIterations = Integer.parseInt(argsList.get(argsList.indexOf("--randomiterations") + 1));
+        boolean isFirstImprovement = Boolean.parseBoolean(argsList.get(argsList.indexOf("--firstimprovement") + 1));
 
-        Double alpha = 0.05;
-        int seconds = 60 * 30; // 30 minutes
-        int numberOfRandomIterations = 500;
+        System.out.println("[DEBUG] instanceFilePath: " + instanceFilePath);
+        System.out.println("[DEBUG] alpha: " + alpha);
+        System.out.println("[DEBUG] numberOfRandomIterations: " + numberOfRandomIterations);
+        System.out.println("[DEBUG] isFirstImprovement: " + isFirstImprovement);
 
+        int seconds = 2; // 30 minutes
 		long startTime = System.currentTimeMillis();
 
-		GRASP_MAX_SC_QBF grasp = new GRASP_MAX_SC_QBF(alpha, seconds, new LinearBiasFunction(), instanceFilePath, false);
-//        GRASP_MAX_SC_QBF grasp = new GRASP_MAX_SC_QBF(alpha, iterations, new RandomBiasFunction(), instanceFilePath, true);
+		GRASP_MAX_SC_QBF grasp = new GRASP_MAX_SC_QBF(alpha, seconds, new LinearBiasFunction(), instanceFilePath, isFirstImprovement);
 		Solution<Integer> bestSol = grasp.solve(numberOfRandomIterations);
 
 		long endTime   = System.currentTimeMillis();
