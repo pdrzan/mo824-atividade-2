@@ -194,7 +194,7 @@ public class GRASP_MAX_SC_QBF extends AbstractGRASP<Integer> {
         System.out.println("[DEBUG] numberOfRandomIterations: " + numberOfRandomIterations);
         System.out.println("[DEBUG] isFirstImprovement: " + isFirstImprovement);
 
-        int seconds = 2; // 30 minutes
+        int seconds = 60 * 30; // 30 minutes
 		long startTime = System.currentTimeMillis();
 
 		GRASP_MAX_SC_QBF grasp = new GRASP_MAX_SC_QBF(alpha, seconds, new LinearBiasFunction(), instanceFilePath, isFirstImprovement);
