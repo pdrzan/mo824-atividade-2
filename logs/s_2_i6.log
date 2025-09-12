@@ -1,0 +1,9 @@
+[DEBUG] instanceFilePath: /Users/tutu/Faculdade/MO824/mo824-atividade-2/instances/max_sc_qbf/max_sc_qbf-n_50-k_5.txt
+[DEBUG] alpha: 0.1
+[DEBUG] numberOfRandomIterations: -1
+[DEBUG] isFirstImprovement: false
+[DEBUG] isLinearBiasFunction: false
+Using the Random Bias Function
+(Iter. 0| N ) BestSol = Solution: cost=[-341.11999999999995], size=[25], elements=[36, 17, 34, 19, 43, 40, 8, 39, 15, 49, 2, 27, 38, 32, 16, 14, 35, 37, 47, 30, 4, 1, 42, 9, 33]
+maxVal = Solution: cost=[-341.11999999999995], size=[25], elements=[36, 17, 34, 19, 43, 40, 8, 39, 15, 49, 2, 27, 38, 32, 16, 14, 35, 37, 47, 30, 4, 1, 42, 9, 33]
+Time = 300.008 seg
