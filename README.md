@@ -1,4 +1,4 @@
-# Heurítica de GRASP para o problema MAX_SC_QBF
+# Heurística de GRASP para o problema MAX_SC_QBF
 
 [![Static Badge](https://img.shields.io/badge/Java-ED8B00?logo=openjdk&logoColor=white)](https://docs.oracle.com/en/java/)
 
