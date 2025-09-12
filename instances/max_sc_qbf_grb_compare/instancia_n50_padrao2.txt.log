@@ -1,0 +1,8 @@
+[DEBUG] instanceFilePath: ./instancia_n50_padrao2.txt
+[DEBUG] alpha: 0.05
+[DEBUG] numberOfRandomIterations: 0
+[DEBUG] isFirstImprovement: false
+[DEBUG] isLinearBiasFunction: false
+maxVal = Solution: cost=[6313.0], size=[31], elements=[17, 41, 11, 49, 3, 21, 9, 36, 27, 10, 22, 34, 14, 16, 5, 33, 15, 18, 30, 40, 47, 8, 38, 23, 37, 24, 2, 26, 43, 32, 28]
+Time = 30.138 seg
+--------------------------------------------------

@@ -1,0 +1,8 @@
+[DEBUG] instanceFilePath: ./instancia_n100_padrao3.txt
+[DEBUG] alpha: 0.05
+[DEBUG] numberOfRandomIterations: 0
+[DEBUG] isFirstImprovement: false
+[DEBUG] isLinearBiasFunction: false
+maxVal = Solution: cost=[21422.0], size=[71], elements=[68, 46, 50, 64, 19, 56, 73, 88, 26, 76, 51, 75, 80, 87, 40, 49, 22, 65, 72, 8, 53, 93, 10, 57, 37, 47, 11, 9, 70, 94, 16, 95, 54, 5, 0, 15, 6, 86, 97, 48, 18, 82, 71, 98, 43, 39, 58, 92, 3, 45, 28, 27, 74, 23, 67, 1, 69, 61, 42, 13, 21, 14, 55, 90, 60, 63, 85, 91, 31, 59, 77]
+Time = 30.217 seg
+--------------------------------------------------

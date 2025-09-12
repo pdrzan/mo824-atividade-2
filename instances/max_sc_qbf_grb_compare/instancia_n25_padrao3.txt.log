@@ -1,0 +1,16 @@
+[DEBUG] instanceFilePath: ./instancia_n25_padrao3.txt
+[DEBUG] alpha: 0.05
+[DEBUG] numberOfRandomIterations: 0
+[DEBUG] isFirstImprovement: false
+[DEBUG] isLinearBiasFunction: false
+maxVal = Solution: cost=[943.0], size=[13], elements=[6, 8, 20, 7, 9, 16, 24, 0, 22, 18, 5, 14, 3]
+Time = 30.05 seg
+--------------------------------------------------
+[DEBUG] instanceFilePath: instances/max_sc_qbf_grb_compare/instancia_n25_padrao3.txt
+[DEBUG] alpha: 0.05
+[DEBUG] numberOfRandomIterations: 0
+[DEBUG] isFirstImprovement: false
+[DEBUG] isLinearBiasFunction: false
+maxVal = Solution: cost=[943.0], size=[13], elements=[6, 8, 20, 7, 9, 16, 24, 0, 22, 18, 5, 14, 3]
+Time = 30.047 seg
+--------------------------------------------------
