@@ -1,0 +1,9 @@
+[DEBUG] instanceFilePath: instances/max_sc_qbf/max_sc_qbf-n_50-k_3.txt
+[DEBUG] alpha: 0.05
+[DEBUG] numberOfRandomIterations: -1
+[DEBUG] isFirstImprovement: false
+[DEBUG] isLinearBiasFunction: true
+Using the Linear Bias Function
+(Iter. 0| N ) BestSol = Solution: cost=[-606.0399999999998], size=[35], elements=[6, 41, 4, 15, 20, 31, 27, 29, 48, 8, 40, 22, 0, 49, 45, 21, 7, 42, 38, 32, 24, 46, 43, 2, 13, 36, 44, 26, 39, 23, 28, 19, 34, 30, 1]
+maxVal = Solution: cost=[-606.0399999999998], size=[35], elements=[6, 41, 4, 15, 20, 31, 27, 29, 48, 8, 40, 22, 0, 49, 45, 21, 7, 42, 38, 32, 24, 46, 43, 2, 13, 36, 44, 26, 39, 23, 28, 19, 34, 30, 1]
+Time = 1800.012 seg
