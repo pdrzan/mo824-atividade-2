@@ -299,11 +299,7 @@ public class MAX_SC_QBF implements Evaluator<Integer> {
         }
 
 		// If instances have full matrix not only non-null values
-		//for (int i = 0; i < n; i++) {
-		//	for (int k = 0; k < i; k++){
-		//		stok.nextToken();
-		//	}
-
+		for (int i = 0; i < n; i++) {
 			for (int j = i; j < n; j++) {
 				stok.nextToken();
 				A[i][j] = stok.nval;

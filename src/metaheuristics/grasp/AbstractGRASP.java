@@ -221,6 +221,7 @@ public abstract class AbstractGRASP<E> {
 
 			CL.remove(inCand);
 			sol.add(inCand);
+
 			ObjFunction.evaluate(sol);
 			RCL.clear();
 
@@ -272,7 +273,7 @@ public abstract class AbstractGRASP<E> {
 	 * @return true if the criteria is met.
 	 */
 	public Boolean constructiveStopCriteria() {
-		return (cost >= sol.cost) ? false : true;
+		return cost < sol.cost;
 	}
 
 }
